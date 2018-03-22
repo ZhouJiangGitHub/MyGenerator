@@ -1,0 +1,156 @@
+package ${target_base_package}.controller;
+
+import ${target_base_package}.entity.rely.ResponseData;
+import ${target_base_package}.entity.${class_name};
+import ${target_base_package}.service.${class_name}Service;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.List;
+#parse("FileHeader.vm")
+@Api(value = "${Api_value}", description = "${Api_description}")
+@Controller
+@RequestMapping("${RequestMapping_of_class}")
+public class ${class_name}Controller {
+    private static final Logger logger = LoggerFactory.getLogger(${class_name}Controller.class);
+
+    @Autowired
+    private ${class_name}Service ${object_name}Service;
+
+    @ApiOperation(value = "新增${class_description}", notes = "")
+    @RequestMapping(value = "add${class_name}", method = {RequestMethod.POST})
+    @ResponseBody
+    public ResponseData<${class_name}> add${class_name}(
+    #foreach($element in $field_name_list)
+        #if(${foreach.count} < ${field_number})
+        #*空行*#
+        #set($field_name=$field_name_list.get(${foreach.count}))
+            #if($field_name!="createTime"&&$field_name!="updateTime")
+            @ApiParam("$field_description_list.get(${foreach.count})") @RequestParam(value="$field_name_list.get(${foreach.count})",required = false) $field_type_list.get(${foreach.count}) $field_name_list.get(${foreach.count}) #if(${foreach.count} < $max_index_no_time),#end
+            #end
+        #end
+    #end){
+        ResponseData<${class_name}> responseData=new ResponseData<>();
+        ${class_name} ${object_name}=new ${class_name}();
+    #foreach($element in $field_name_list)
+        #if(${foreach.count} < ${field_number})
+            #set($field_name=$field_name_list.get(${foreach.count}))
+            #set($field_name_up=${field_name.substring(0,1).toUpperCase()} + ${field_name.substring(1)})
+            #if($field_name!="createTime"&&$field_name!="updateTime")
+                ${object_name}.set${field_name_up}(${field_name});
+            #else
+                ${object_name}.set${field_name_up}(new Date());
+            #end
+        #end
+    #end
+        int res=${object_name}Service.add${class_name}(${object_name});
+        if (res==0){
+        responseData.jsonFill(2,"新增失败}",null);
+        return responseData;
+        }
+        responseData.jsonFill(1,null,${object_name});
+        return responseData;
+    }
+
+    @ApiOperation(value = "更新${class_description}", notes = "")
+    @RequestMapping(value = "update${class_name}", method = {RequestMethod.POST})
+    @ResponseBody
+    public ResponseData<Boolean> update${class_name}(
+        @ApiParam("$field_description_list.get(0)") @RequestParam("$field_name_list.get(0)") $field_type_list.get(0) $field_name_list.get(0),
+    #foreach($element in $field_name_list)
+        #if(${foreach.count} < ${field_number})
+        #*空行*#
+        #set($field_name=$field_name_list.get(${foreach.count}))
+            #if($field_name!="createTime"&&$field_name!="updateTime")
+            @ApiParam("$field_description_list.get(${foreach.count})") @RequestParam(value="$field_name",required = false) $field_type_list.get(${foreach.count}) $field_name #if(${foreach.count} < $max_index_no_time),#end
+            #end
+        #end
+    #end
+        ){
+        ResponseData<Boolean> responseData=new ResponseData<>();
+        ${class_name} ${object_name}=new ${class_name}();
+
+        #set($primary=$field_name_list.get(0))
+        #set($primary_up=${primary.substring(0,1).toUpperCase()} + ${primary.substring(1)})
+        ${object_name}.set${primary_up}(${primary});
+
+    #foreach($element in $field_name_list)
+        #if(${foreach.count} < ${field_number})
+        #set($field_name=$field_name_list.get(${foreach.count}))
+        #set($field_name_up=${field_name.substring(0,1).toUpperCase()} + ${field_name.substring(1)})
+            #if($field_name!="createTime"&&$field_name!="updateTime")
+                ${object_name}.set${field_name_up}(${field_name});
+            #else
+                ${object_name}.set${field_name_up}(new Date());
+            #end
+        #end
+    #end
+        int res=${object_name}Service.update${class_name}(${object_name});
+        if (res==0){
+            responseData.jsonFill(2,"更新失败",false);
+            return responseData;
+        }
+        responseData.jsonFill(1,null,true);
+        return responseData;
+    }
+
+    #if($has_blobs==1)
+        @ApiOperation(value = "获取所有的${class_description}的简要信息", notes = "")
+        @RequestMapping(value = "getAll${class_name}ShortInfo", method = {RequestMethod.GET})
+        @ResponseBody
+        public ResponseData<List<${class_name}>> getAll${class_name}ShortInfo(){
+        List<${class_name}> ${object_name}List=${object_name}Service.getAll${class_name}();
+        ResponseData<List<${class_name}>> responseData=new ResponseData<>();
+        responseData.jsonFill(1,null,${object_name}List);
+        return responseData;
+        }
+    #end
+
+    @ApiOperation(value = "通过ID获取${class_description}", notes = "")
+    @RequestMapping(value = "get${class_name}ById", method = {RequestMethod.GET})
+    @ResponseBody
+    public ResponseData<${class_name}> get${class_name}ById(@ApiParam("${field_description_list.get(0)}") @RequestParam("${field_name_list.get(0)}") ${field_type_list.get(0)} ${field_name_list.get(0)}){
+    ResponseData<${class_name}> responseData=new ResponseData<>();
+    ${class_name} ${object_name}=${object_name}Service.get${class_name}ById(${field_name_list.get(0)});
+    if (${object_name}==null){
+    responseData.jsonFill(2,"无效的${field_name_list.get(0)}",null);
+    return responseData;
+    }
+    responseData.jsonFill(1,null,${object_name});
+    return responseData;
+    }
+
+    @ApiOperation(value = "获取所有的${class_description}", notes = "不提供page和pageSize就不分页")
+    @RequestMapping(value = "getAll${class_name}", method = {RequestMethod.GET})
+    @ResponseBody
+    public ResponseData<List<${class_name}>> getAll${class_name}(
+        @ApiParam("page") @RequestParam(value = "page",required = false) Integer page,
+        @ApiParam("pageSize") @RequestParam(value = "pageSize",required = false) Integer pageSize){
+    ResponseData<List<${class_name}>> responseData=new ResponseData<>();
+    List<${class_name}> list=${object_name}Service.getAll${class_name}(page,pageSize);
+    responseData.jsonFill(1,null,list);
+    responseData.setCount(list.size());
+    return responseData;
+    }
+
+    @ApiOperation(value = "删除", notes = "")
+    @RequestMapping(value = "delete${class_name}/{id}", method = {RequestMethod.DELETE})
+    @ResponseBody
+    public ResponseData<Boolean> delete${class_name}(@ApiParam("ID") @PathVariable $field_type_list.get(0) id){
+        ResponseData<Boolean> responseData=new ResponseData<>();
+        int res=${object_name}Service.delete${class_name}(id);
+        if (res==0){
+            responseData.jsonFill(2,"删除失败",false);
+            return responseData;
+        }
+        responseData.jsonFill(1,"删除成功",true);
+        return responseData;
+    }
+}

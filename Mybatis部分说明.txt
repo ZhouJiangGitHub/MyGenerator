@@ -1,0 +1,12 @@
+源码说明
+mybatis 的逆向工程 - CSDN博客
+http://blog.csdn.net/u012373815/article/details/47111995
+目前至少支持mysql和oracle数据库
+--------------------------------------------------------------
+为什么不把MyVelocityGenerator和MybatisGenerator并列作为MyGenerator的子module，
+而要把MyVelocityGenerator作为MybatisGenerator（改名为MyGenerator）的子module？
+因为逆向工程的主类是默认到project（而不是module）的根目录下找配置文件，所以必须将配置文件放在project下，
+所以索性将MybatisGenerator改名为MyGenerator作为project。
+
+改善记录：
+生成文件之前先验证存在删除，免得xml文件追加运行出错有时还不容易识别

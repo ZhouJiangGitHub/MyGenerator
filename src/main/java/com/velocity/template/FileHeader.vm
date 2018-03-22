@@ -1,0 +1,4 @@
+#set($USER ="zj")
+/**
+* @author ${USER} #*@date ${DATE} ${TIME}*#
+*/

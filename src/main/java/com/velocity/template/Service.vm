@@ -1,0 +1,18 @@
+package ${target_base_package}.service;
+
+import ${target_base_package}.entity.${class_name};
+import java.util.List;
+
+#parse("FileHeader.vm")
+public interface ${class_name}Service {
+
+    int add${class_name}(${class_name} ${object_name});
+
+    int update${class_name}(${class_name} ${object_name});
+
+    ${class_name} get${class_name}ById($field_type_list.get(0) id);
+
+    List<${class_name}> getAll${class_name}(Integer page,Integer pageSize);
+
+    int delete${class_name}($field_type_list.get(0) id);
+}

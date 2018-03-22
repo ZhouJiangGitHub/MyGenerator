@@ -1,0 +1,48 @@
+package ${target_base_package}.service.impl;
+
+import ${target_base_package}.entity.${class_name};
+import ${target_base_package}.entity.${class_name}Example;
+import ${target_base_package}.dao.${class_name}Mapper;
+import ${target_base_package}.service.${class_name}Service;
+import java.util.List;
+import java.util.ArrayList;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+#parse("FileHeader.vm")
+@Service
+public class ${class_name}ServiceImpl implements ${class_name}Service {
+    @Autowired
+    private ${class_name}Mapper ${object_name}Mapper;
+
+    @Override
+    public int add${class_name}(${class_name} ${object_name}){
+        return ${object_name}Mapper.insert(${object_name});
+    }
+
+    @Override
+    public int update${class_name}(${class_name} ${object_name}){
+        return ${object_name}Mapper.updateByPrimaryKeySelective(${object_name});
+    }
+
+    @Override
+    public ${class_name} get${class_name}ById($field_type_list.get(0) id){
+        return ${object_name}Mapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public List<${class_name}> getAll${class_name}(Integer page,Integer pageSize){
+        if (page==null||pageSize==null){
+            ${class_name}Example ${object_name}Example=new ${class_name}Example();
+            return ${object_name}Mapper.selectByExample(${object_name}Example);
+        }
+        int offset = page*pageSize;
+        int limit = pageSize;
+        //return ${object_name}Mapper.selectAll${class_name}ByPage(offset,limit);
+        return new ArrayList<${class_name}>();
+    }
+
+    @Override
+    public int delete${class_name}($field_type_list.get(0) id){
+        return ${object_name}Mapper.deleteByPrimaryKey(id);
+    }
+}

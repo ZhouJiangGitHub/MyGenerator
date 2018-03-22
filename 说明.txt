@@ -1,0 +1,33 @@
+使用说明：
+1，在实体类注释每个字段的含义
+2，创建时间用createTime,更新时间用updateTime。
+
+
+使用 Velocity 模板引擎快速生成代码
+https://www.ibm.com/developerworks/cn/java/j-lo-velocity1/
+java:-source 1.5中不支持diamond运算符（请使用-source 7或更高版本以启用diamond运算符）
+
+模板说明：
+在模版中导包可以不用在每次执行完手动导包，可以直接连续执行。
+velocity可以用==来比较字符串。官方文档：
+the semantics of == are slightly different than Java where == can only be used to test object equality.
+In Velocity the equivalent operator can be used to directly compare numbers, strings, or objects.
+文档地址：
+Apache Velocity Engine - User Guide
+http://velocity.apache.org/engine/1.7/user-guide.html#string-concatenation
+行尾注释会引起换行，形如：#*这句不能放if分支，否则进入else分支时field_name_up值依旧是上次循环时if分支中的值*#
+
+改善记录：
+1，UserUserGoldAccountController，当实体类名中有user或manage时会重复。
+已改善
+2，实体类中的每行声明字段的代码中有空行分隔，在插入和更新方法中的参数就读不出来。
+没再复现
+3，实体类中包含set和get方法会不会影响。
+不会，因为是用private判断的
+4，生成的类复制进目的项目中若和目的包名不同idea会将类文件包名修改为目的包名，所以对于自动生成包这点不用多虑
+5，方法的第一个注解@ApiOperation(value = "新增用户金币账户", notes = "")原先是
+ @ApiOperation(value = "新增userGoldAccount", notes = "")，对接的人就不好理解到底新增什么。
+以解决
+6，在用set方法填充值的时候要将参数从原名换成new Date
+7,更新方法中不需要createTime,不需要填充这个字段的值
+8,控制器中添加分页获取所有对象
